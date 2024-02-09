@@ -1,26 +1,35 @@
-import ReactSVG from '/react.svg'
-import CountBtn from '@/components/CountBtn'
-import { Badge } from '@/components/ui/badge'
+import React from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 
-function App() {
+import { ErrorFallback } from './ErrorFallback'
+import { FetchedInfo } from './FetchedInfo'
+import { FetchForm } from './FetchForm'
+
+const App = () => {
+  const [pokemonName, setPokemonName] = React.useState<string>('')
+
+  function handleSubmit(newPokemonName: string) {
+    setPokemonName(newPokemonName)
+  }
+
+  function handleReset() {
+    setPokemonName('')
+  }
+
   return (
-    <main className="flex h-screen flex-col items-center justify-center">
-      <div className="gap-y-5 flex flex-col items-center">
-        <div className="gap-x-5 inline-flex items-center">
-          <img src={ReactSVG} alt="React Logo" className="w-32" />
-          <span className="text-6xl">+</span>
-          <img src={'/vite.svg'} alt="Vite Logo" className="w-32" />
-        </div>
-        <a
-          href="https://ui.shadcn.com"
-          rel="noopener noreferrer nofollow"
-          target="_blank"
+    <div className="container mt-24 flex max-w-md flex-col items-center space-y-4">
+      <FetchForm pokemonName={pokemonName} onSubmit={handleSubmit} />
+      <hr />
+      <div className="w-full max-w-xs text-center">
+        <ErrorBoundary
+          FallbackComponent={ErrorFallback}
+          onReset={handleReset}
+          resetKeys={[pokemonName]}
         >
-          <Badge variant="outline">shadcn/ui</Badge>
-        </a>
-        <CountBtn />
+          <FetchedInfo pokemonName={pokemonName} />
+        </ErrorBoundary>
       </div>
-    </main>
+    </div>
   )
 }
 
