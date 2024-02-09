@@ -11,11 +11,11 @@ export function useFetchForm({
   externalPokemonName,
   onSubmit
 }: FetchFormHook) {
-  const [pokemonName, setPokemonName] = React.useState(initialPokemonName)
+  const [pokemonName, setPokemonName] = React.useState(() => initialPokemonName)
 
   React.useEffect(() => {
-    setPokemonName(externalPokemonName || '')
-  }, [externalPokemonName])
+    setPokemonName(externalPokemonName ?? initialPokemonName)
+  }, [initialPokemonName, externalPokemonName])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPokemonName(e.target.value)

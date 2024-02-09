@@ -17,7 +17,14 @@ export interface Pokemon {
 }
 
 export type FetchedInfoState =
-  | { status: 'idle'; pokemon: null; error: null }
-  | { status: 'pending'; pokemon: null; error: null }
-  | { status: 'rejected'; pokemon: null; error: Error }
-  | { status: 'resolved'; pokemon: Pokemon; error: null }
+  | { status: FetchStatus.IDLE; pokemon: null; error: null }
+  | { status: FetchStatus.PENDING; pokemon: null; error: null }
+  | { status: FetchStatus.REJECTED; pokemon: null; error: Error }
+  | { status: FetchStatus.RESOLVED; pokemon: Pokemon; error: null }
+
+export enum FetchStatus {
+  IDLE = 'idle',
+  PENDING = 'pending',
+  RESOLVED = 'resolved',
+  REJECTED = 'rejected'
+}

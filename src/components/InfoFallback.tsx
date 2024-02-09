@@ -1,5 +1,10 @@
-import React from 'react'
-
+import {
+  INFO_FALLBACK_ID,
+  INFO_FALLBACK_IMAGE,
+  INFO_FALLBACK_LOADING_PLACEHOLDER,
+  INFO_FALLBACK_NUMBER,
+  INFO_FALLBACK_SPECIAL_ATTACKS_PLACEHOLDERS
+} from '@/config/app'
 import { Pokemon } from '@/models'
 
 import { DataView } from './DataView'
@@ -9,19 +14,15 @@ interface InfoFallbackProps {
 }
 
 export const InfoFallback = ({ name }: InfoFallbackProps) => {
-  const initialName = React.useRef(name).current
   const fallbackPokemonData: Pokemon = {
-    id: 'fallback-id',
-    name: initialName,
-    number: 'XXX',
-    image: '/img/fallback-pokemon.jpg',
+    id: INFO_FALLBACK_ID,
+    name,
+    number: INFO_FALLBACK_NUMBER,
+    image: INFO_FALLBACK_IMAGE,
     attacks: {
-      special: [
-        { name: 'Loading Attack 1', type: 'Type', damage: 'XX' },
-        { name: 'Loading Attack 2', type: 'Type', damage: 'XX' }
-      ]
+      special: INFO_FALLBACK_SPECIAL_ATTACKS_PLACEHOLDERS
     },
-    fetchedAt: 'loading...'
+    fetchedAt: INFO_FALLBACK_LOADING_PLACEHOLDER
   }
   return <DataView pokemon={fallbackPokemonData} />
 }

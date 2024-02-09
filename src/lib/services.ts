@@ -1,4 +1,8 @@
-import { FETCH_GRAPHQL_ENDPOINT, FETCH_GRAPHQL_QUERY } from '@/config/app'
+import {
+  FETCH_ERROR_TEXT,
+  FETCH_GRAPHQL_ENDPOINT,
+  FETCH_GRAPHQL_QUERY
+} from '@/config/app'
 import { Pokemon } from '@/models'
 
 import { formatDate } from './utils'
@@ -28,7 +32,7 @@ export const fetchPokemon = async (
         pokemon.fetchedAt = formatDate(new Date())
         return pokemon
       } else {
-        throw new Error(`No pokemon with the name "${name}"`)
+        throw new Error(`${FETCH_ERROR_TEXT} "${name}"`)
       }
     } else {
       throw {

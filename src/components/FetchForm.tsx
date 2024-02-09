@@ -1,6 +1,9 @@
 import { Label } from '@radix-ui/react-label'
 
-import { FETCH_FORM_INPUT_PLACEHOLDER_TEXT } from '@/config/app'
+import {
+  FETCH_BUTTON_INPUT_SUGGESTIONS,
+  FETCH_FORM_INPUT_PLACEHOLDER_TEXT
+} from '@/config/app'
 import { useFetchForm } from '@/hooks/useFetchForm'
 
 import { Button } from './ui/button'
@@ -34,9 +37,9 @@ export const FetchForm = ({
     <form onSubmit={handleSubmit} className="flex flex-col items-center">
       <Label htmlFor="pokemonName-input">Pokemon Name</Label>
       <small>
-        Try {renderSuggestionButton('pikachu')},{' '}
-        {renderSuggestionButton('charizard')}, or{' '}
-        {renderSuggestionButton('mew')}
+        Try {renderSuggestionButton(FETCH_BUTTON_INPUT_SUGGESTIONS.SUGGESTION1)}
+        , {renderSuggestionButton(FETCH_BUTTON_INPUT_SUGGESTIONS.SUGGESTION2)},
+        or {renderSuggestionButton(FETCH_BUTTON_INPUT_SUGGESTIONS.SUGGESTION3)}
       </small>
       <div className="flex w-full items-center space-x-2">
         <Input

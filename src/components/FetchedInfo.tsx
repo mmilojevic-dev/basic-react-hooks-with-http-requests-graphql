@@ -1,8 +1,9 @@
 import { Label } from '@radix-ui/react-label'
 import { useEffect, useState } from 'react'
 
+import { UNHANDLED_ERROR_TEXT } from '@/config/app'
 import { fetchPokemon } from '@/lib/services'
-import { FetchedInfoState } from '@/models'
+import { FetchedInfoState, FetchStatus } from '@/models'
 
 import { DataView } from './DataView'
 import { InfoFallback } from './InfoFallback'
@@ -13,7 +14,7 @@ interface FetchedInfoProps {
 
 export const FetchedInfo = ({ pokemonName }: FetchedInfoProps): JSX.Element => {
   const [state, setState] = useState<FetchedInfoState>({
-    status: pokemonName ? 'pending' : 'idle',
+    status: pokemonName ? FetchStatus.PENDING : FetchStatus.IDLE,
     pokemon: null,
     error: null
   })
@@ -27,14 +28,18 @@ export const FetchedInfo = ({ pokemonName }: FetchedInfoProps): JSX.Element => {
       }
 
       try {
-        setState({ status: 'pending', pokemon: null, error: null })
+        setState({ status: FetchStatus.PENDING, pokemon: null, error: null })
 
         const fetchedPokemon = await fetchPokemon(pokemonName)
 
-        setState({ status: 'resolved', pokemon: fetchedPokemon, error: null })
+        setState({
+          status: FetchStatus.RESOLVED,
+          pokemon: fetchedPokemon,
+          error: null
+        })
       } catch (fetchError) {
         const error = fetchError as Error
-        setState({ status: 'rejected', pokemon: null, error })
+        setState({ status: FetchStatus.REJECTED, pokemon: null, error })
       }
     }
 
@@ -42,15 +47,15 @@ export const FetchedInfo = ({ pokemonName }: FetchedInfoProps): JSX.Element => {
   }, [pokemonName])
 
   switch (status) {
-    case 'idle':
+    case FetchStatus.IDLE:
       return <Label>Submit a Pokemon</Label>
-    case 'pending':
+    case FetchStatus.PENDING:
       return <InfoFallback name={pokemonName} />
-    case 'rejected':
+    case FetchStatus.REJECTED:
       throw error
-    case 'resolved':
+    case FetchStatus.RESOLVED:
       return <DataView pokemon={pokemon} />
     default:
-      throw new Error('This is the unhandled error!')
+      throw new Error(UNHANDLED_ERROR_TEXT)
   }
 }
