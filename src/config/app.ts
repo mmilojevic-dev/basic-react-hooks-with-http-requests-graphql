@@ -36,3 +36,4 @@ export const INFO_FALLBACK_SPECIAL_ATTACKS_PLACEHOLDERS = [
   { name: 'Loading Attack 2', type: 'Type', damage: 'XX' },
   { name: 'Loading Attack 2', type: 'Type', damage: 'XX' }
 ]
+export const INFO_FALLBACK_LOADING_PLACEHOLDER = 'loading...'
