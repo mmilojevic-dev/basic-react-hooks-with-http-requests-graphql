@@ -21,19 +21,24 @@ export const FetchedInfo = ({ pokemonName }: FetchedInfoProps): JSX.Element => {
   const { status, pokemon, error } = state
 
   useEffect(() => {
-    if (!pokemonName) {
-      return
+    const fetchData = async () => {
+      if (!pokemonName) {
+        return
+      }
+
+      try {
+        setState({ status: 'pending', pokemon: null, error: null })
+
+        const fetchedPokemon = await fetchPokemon(pokemonName)
+
+        setState({ status: 'resolved', pokemon: fetchedPokemon, error: null })
+      } catch (fetchError) {
+        const error = fetchError as Error
+        setState({ status: 'rejected', pokemon: null, error })
+      }
     }
 
-    setState({ status: 'pending', pokemon: null, error: null })
-
-    fetchPokemon(pokemonName)
-      .then((fetchedPokemon) => {
-        setState({ status: 'resolved', pokemon: fetchedPokemon, error: null })
-      })
-      .catch((fetchError) => {
-        setState({ status: 'rejected', pokemon: null, error: fetchError })
-      })
+    fetchData()
   }, [pokemonName])
 
   switch (status) {
@@ -42,8 +47,7 @@ export const FetchedInfo = ({ pokemonName }: FetchedInfoProps): JSX.Element => {
     case 'pending':
       return <InfoFallback name={pokemonName} />
     case 'rejected':
-      // Provide more context in the error message
-      throw new Error(`Failed to fetch ${pokemonName}: ${error?.message}`)
+      throw error
     case 'resolved':
       return <DataView pokemon={pokemon} />
     default:
