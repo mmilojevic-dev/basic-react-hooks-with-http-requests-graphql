@@ -17,7 +17,7 @@ const App = () => {
   }
 
   return (
-    <div className="container mt-24 flex max-w-md flex-col items-center space-y-4">
+    <div className="container mt-[5vh] flex max-w-md flex-col items-center space-y-4">
       <FetchForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className="w-full max-w-xs text-center">

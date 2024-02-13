@@ -1,9 +1,9 @@
 import { Label } from '@radix-ui/react-label'
-import { useEffect, useState } from 'react'
 
-import { UNHANDLED_ERROR_TEXT } from '@/config/app'
+import { FETCHED_INFO_IDLE_TEXT, UNHANDLED_ERROR_TEXT } from '@/config/app'
+import { useAsync } from '@/hooks/useAsync'
 import { fetchPokemon } from '@/lib/services'
-import { FetchedInfoState, FetchStatus } from '@/models'
+import { AsyncStatus } from '@/models'
 
 import { DataView } from './DataView'
 import { InfoFallback } from './InfoFallback'
@@ -13,48 +13,32 @@ interface FetchedInfoProps {
 }
 
 export const FetchedInfo = ({ pokemonName }: FetchedInfoProps): JSX.Element => {
-  const [state, setState] = useState<FetchedInfoState>({
-    status: pokemonName ? FetchStatus.PENDING : FetchStatus.IDLE,
-    pokemon: null,
-    error: null
-  })
-
-  const { status, pokemon, error } = state
-
-  useEffect(() => {
-    const fetchData = async () => {
+  const state = useAsync(
+    () => {
       if (!pokemonName) {
         return
       }
+      return fetchPokemon(pokemonName)
+    },
+    {
+      status: pokemonName ? AsyncStatus.PENDING : AsyncStatus.IDLE,
+      data: null,
+      error: null
+    },
+    [pokemonName]
+  )
 
-      try {
-        setState({ status: FetchStatus.PENDING, pokemon: null, error: null })
-
-        const fetchedPokemon = await fetchPokemon(pokemonName)
-
-        setState({
-          status: FetchStatus.RESOLVED,
-          pokemon: fetchedPokemon,
-          error: null
-        })
-      } catch (fetchError) {
-        const error = fetchError as Error
-        setState({ status: FetchStatus.REJECTED, pokemon: null, error })
-      }
-    }
-
-    fetchData()
-  }, [pokemonName])
+  const { status, data, error } = state
 
   switch (status) {
-    case FetchStatus.IDLE:
-      return <Label>Submit a Pokemon</Label>
-    case FetchStatus.PENDING:
+    case AsyncStatus.IDLE:
+      return <Label>{FETCHED_INFO_IDLE_TEXT}</Label>
+    case AsyncStatus.PENDING:
       return <InfoFallback name={pokemonName} />
-    case FetchStatus.REJECTED:
+    case AsyncStatus.REJECTED:
       throw error
-    case FetchStatus.RESOLVED:
-      return <DataView pokemon={pokemon} />
+    case AsyncStatus.RESOLVED:
+      return <DataView pokemon={data} />
     default:
       throw new Error(UNHANDLED_ERROR_TEXT)
   }

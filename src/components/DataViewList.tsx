@@ -4,12 +4,16 @@ import { DataViewListItem } from './DataViewListItem'
 
 interface DataViewListProps {
   attacks: Attacks
+  attacksShown: number
 }
 
-export const DataViewList = ({ attacks }: DataViewListProps) => {
+export const DataViewList = ({ attacks, attacksShown }: DataViewListProps) => {
+  const { special } = attacks
+  const slicedAttacks =
+    special.length > attacksShown ? special.slice(0, attacksShown) : special
   return (
     <ul>
-      {attacks.special.map((specialAttack, index) => (
+      {slicedAttacks.map((specialAttack, index) => (
         <DataViewListItem
           key={`${specialAttack.name}-${index}`}
           specialAttack={specialAttack}
