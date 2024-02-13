@@ -16,13 +16,7 @@ export interface Pokemon {
   fetchedAt?: string
 }
 
-export type FetchedInfoState =
-  | { status: FetchStatus.IDLE; pokemon: null; error: null }
-  | { status: FetchStatus.PENDING; pokemon: null; error: null }
-  | { status: FetchStatus.REJECTED; pokemon: null; error: Error }
-  | { status: FetchStatus.RESOLVED; pokemon: Pokemon; error: null }
-
-export enum FetchStatus {
+export enum AsyncStatus {
   IDLE = 'idle',
   PENDING = 'pending',
   RESOLVED = 'resolved',

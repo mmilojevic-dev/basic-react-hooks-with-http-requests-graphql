@@ -1,5 +1,6 @@
 import { Label } from '@radix-ui/react-label'
 
+import { FETCHED_INFO_ATTACKS_SHOWN_NUMBER } from '@/config/app'
 import { Pokemon } from '@/models'
 
 import { DataViewList } from './DataViewList'
@@ -27,10 +28,13 @@ export const DataView = ({ pokemon }: DataViewProps) => {
           <CardDescription>{number}</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center">
-          <img className="max-h-72 max-w-full" src={image} alt={name} />
+          <img className="max-h-[15vh] max-w-full" src={image} alt={name} />
         </CardContent>
         <CardFooter className="flex flex-col justify-center">
-          <DataViewList attacks={attacks} />
+          <DataViewList
+            attacks={attacks}
+            attacksShown={FETCHED_INFO_ATTACKS_SHOWN_NUMBER}
+          />
           <Label className="mt-3">
             Fetched at <span className="underline">{pokemon.fetchedAt}</span>
           </Label>
