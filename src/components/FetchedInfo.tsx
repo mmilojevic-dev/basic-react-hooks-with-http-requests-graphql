@@ -1,4 +1,5 @@
 import { Label } from '@radix-ui/react-label'
+import React from 'react'
 
 import { FETCHED_INFO_IDLE_TEXT, UNHANDLED_ERROR_TEXT } from '@/config/app'
 import { useAsync } from '@/hooks/useAsync'
@@ -13,20 +14,18 @@ interface FetchedInfoProps {
 }
 
 export const FetchedInfo = ({ pokemonName }: FetchedInfoProps): JSX.Element => {
-  const state = useAsync(
-    () => {
-      if (!pokemonName) {
-        return
-      }
-      return fetchPokemon(pokemonName)
-    },
-    {
-      status: pokemonName ? AsyncStatus.PENDING : AsyncStatus.IDLE,
-      data: null,
-      error: null
-    },
-    [pokemonName]
-  )
+  const asyncCallback = React.useCallback(() => {
+    if (!pokemonName) {
+      return
+    }
+    return fetchPokemon(pokemonName)
+  }, [pokemonName])
+
+  const state = useAsync(asyncCallback, {
+    status: pokemonName ? AsyncStatus.PENDING : AsyncStatus.IDLE,
+    data: null,
+    error: null
+  })
 
   const { status, data, error } = state
 

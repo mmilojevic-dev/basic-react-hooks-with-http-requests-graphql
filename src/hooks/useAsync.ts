@@ -31,8 +31,7 @@ function asyncReducer<T>(
 
 export const useAsync = <T>(
   asyncCallback: () => Promise<T> | undefined,
-  initialState: AsyncStateType<T>,
-  dependencies: React.DependencyList
+  initialState: AsyncStateType<T>
 ): AsyncStateType<T> => {
   const [state, dispatch] = React.useReducer(
     asyncReducer as React.Reducer<AsyncStateType<T>, AsyncActionType<T>>,
@@ -58,8 +57,7 @@ export const useAsync = <T>(
         dispatch({ type: AsyncStatus.REJECTED, error })
       }
     )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, dependencies)
+  }, [asyncCallback])
 
   return state
 }
