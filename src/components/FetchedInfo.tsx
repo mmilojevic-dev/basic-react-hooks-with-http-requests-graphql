@@ -4,7 +4,7 @@ import React from 'react'
 import { FETCHED_INFO_IDLE_TEXT, UNHANDLED_ERROR_TEXT } from '@/config/app'
 import { useAsync } from '@/hooks/useAsync'
 import { fetchPokemon } from '@/lib/services'
-import { AsyncStatus } from '@/models'
+import { AsyncStateType, AsyncStatus, Pokemon } from '@/models'
 
 import { DataView } from './DataView'
 import { InfoFallback } from './InfoFallback'
@@ -14,20 +14,24 @@ interface FetchedInfoProps {
 }
 
 export const FetchedInfo = ({ pokemonName }: FetchedInfoProps): JSX.Element => {
-  const asyncCallback = React.useCallback(() => {
-    if (!pokemonName) {
-      return
-    }
-    return fetchPokemon(pokemonName)
-  }, [pokemonName])
-
-  const state = useAsync(asyncCallback, {
+  const state = useAsync<AsyncStateType<Pokemon>>({
     status: pokemonName ? AsyncStatus.PENDING : AsyncStatus.IDLE,
     data: null,
     error: null
   })
 
-  const { status, data, error } = state
+  const { status, data, error, run } = state
+
+  React.useEffect(() => {
+    if (!pokemonName) {
+      return
+    }
+    // note the absence of `await` here. Just passing the promise
+    // to `run` so `useAsync` can attach it's own `.then` handler on it to keep
+    // track of the state of the promise.
+    const pokemonPromise = fetchPokemon(pokemonName)
+    run(pokemonPromise)
+  }, [pokemonName, run])
 
   switch (status) {
     case AsyncStatus.IDLE:
