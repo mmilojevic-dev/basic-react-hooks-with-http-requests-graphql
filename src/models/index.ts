@@ -16,15 +16,19 @@ export interface Pokemon {
   fetchedAt?: string
 }
 
-export type FetchedInfoState =
-  | { status: FetchStatus.IDLE; pokemon: null; error: null }
-  | { status: FetchStatus.PENDING; pokemon: null; error: null }
-  | { status: FetchStatus.REJECTED; pokemon: null; error: Error }
-  | { status: FetchStatus.RESOLVED; pokemon: Pokemon; error: null }
-
-export enum FetchStatus {
+export enum AsyncStatus {
   IDLE = 'idle',
   PENDING = 'pending',
   RESOLVED = 'resolved',
   REJECTED = 'rejected'
 }
+
+export type AsyncStateType<T> =
+  | { status: AsyncStatus.IDLE | AsyncStatus.PENDING; data: null; error: null }
+  | { status: AsyncStatus.RESOLVED; data: T; error: null }
+  | { status: AsyncStatus.REJECTED; data: null; error: Error }
+
+export type AsyncActionType<T> =
+  | { type: AsyncStatus.PENDING }
+  | { type: AsyncStatus.RESOLVED; data: T }
+  | { type: AsyncStatus.REJECTED; error: Error }
