@@ -8,11 +8,11 @@ import { FetchForm } from './FetchForm'
 const App = () => {
   const [pokemonName, setPokemonName] = React.useState<string>('')
 
-  function handleSubmit(newPokemonName: string) {
+  const handleSubmit = (newPokemonName: string) => {
     setPokemonName(newPokemonName)
   }
 
-  function handleReset() {
+  const handleReset = () => {
     setPokemonName('')
   }
 

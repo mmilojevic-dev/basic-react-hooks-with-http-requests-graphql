@@ -4,7 +4,7 @@ import React from 'react'
 import { FETCHED_INFO_IDLE_TEXT, UNHANDLED_ERROR_TEXT } from '@/config/app'
 import { useAsync } from '@/hooks/useAsync'
 import { fetchPokemon } from '@/lib/services'
-import { AsyncStateType, AsyncStatus, Pokemon } from '@/models'
+import { AsyncStatus, Pokemon } from '@/models'
 
 import { DataView } from './DataView'
 import { InfoFallback } from './InfoFallback'
@@ -14,7 +14,7 @@ interface FetchedInfoProps {
 }
 
 export const FetchedInfo = ({ pokemonName }: FetchedInfoProps): JSX.Element => {
-  const state = useAsync<AsyncStateType<Pokemon>>({
+  const state = useAsync({
     status: pokemonName ? AsyncStatus.PENDING : AsyncStatus.IDLE,
     data: null,
     error: null
@@ -29,7 +29,7 @@ export const FetchedInfo = ({ pokemonName }: FetchedInfoProps): JSX.Element => {
     // note the absence of `await` here. Just passing the promise
     // to `run` so `useAsync` can attach it's own `.then` handler on it to keep
     // track of the state of the promise.
-    const pokemonPromise = fetchPokemon(pokemonName)
+    const pokemonPromise: Promise<Pokemon> = fetchPokemon(pokemonName)
     run(pokemonPromise)
   }, [pokemonName, run])
 
@@ -41,7 +41,8 @@ export const FetchedInfo = ({ pokemonName }: FetchedInfoProps): JSX.Element => {
     case AsyncStatus.REJECTED:
       throw error
     case AsyncStatus.RESOLVED:
-      return <DataView pokemon={data} />
+      // TODO: avoid using type assertion here
+      return <DataView pokemon={data as Pokemon} />
     default:
       throw new Error(UNHANDLED_ERROR_TEXT)
   }

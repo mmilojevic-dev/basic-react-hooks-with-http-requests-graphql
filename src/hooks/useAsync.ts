@@ -3,15 +3,7 @@ import React from 'react'
 import { asyncReducer } from '@/components/reducers/asyncReducer'
 import { AsyncStateType, AsyncStatus } from '@/models'
 
-type AsyncRunCallbackType<T> = {
-  run: (promise: Promise<T>) => void
-}
-
-type AsyncHookReturnStateType<T> = AsyncStateType<T> & AsyncRunCallbackType<T>
-
-export const useAsync = <T>(
-  initialState: AsyncStateType<T>
-): AsyncHookReturnStateType<T> => {
+export const useAsync = <T>(initialState: AsyncStateType<T>) => {
   const [state, dispatch] = React.useReducer(asyncReducer, {
     ...initialState,
     status: AsyncStatus.IDLE,
@@ -19,14 +11,17 @@ export const useAsync = <T>(
     error: null
   })
 
+  // TODO: improve typing here, avoid eslint-disable
   const run = React.useCallback(
-    (promise: Promise<T>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (promise: Promise<any>) => {
       dispatch({ type: AsyncStatus.PENDING })
       promise.then(
-        (data) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (data: any) => {
           dispatch({ type: AsyncStatus.RESOLVED, data })
         },
-        (error) => {
+        (error: Error) => {
           dispatch({ type: AsyncStatus.REJECTED, error })
         }
       )
@@ -34,5 +29,5 @@ export const useAsync = <T>(
     [dispatch]
   )
 
-  return { run, ...state } as AsyncHookReturnStateType<T>
+  return { run, ...state }
 }

@@ -6,11 +6,11 @@ interface FetchFormHook {
   onSubmit: (name: string) => void
 }
 
-export function useFetchForm({
+export const useFetchForm = ({
   initialPokemonName,
   externalPokemonName,
   onSubmit
-}: FetchFormHook) {
+}: FetchFormHook) => {
   const [pokemonName, setPokemonName] = React.useState(() => initialPokemonName)
 
   React.useEffect(() => {
